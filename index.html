@@ -54,6 +54,34 @@
     <div class="welcome-msg">
         مرحباً بكم في مكتبة حبيب قدوس
     </div>
+<script>
+  async function searchBible() {
+    const query = document.getElementById('searchInput').value;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = 'جاري البحث...';
 
+    // هنا بنحدد ملفات الـ JSON (تأكد من مطابقة الأسماء)
+    const files = ['Mark.json', 'Exodus.json']; 
+    let results = [];
+
+    for (const file of files) {
+      try {
+        const response = await fetch(`data/${file}`);
+        const data = await response.json();
+        
+        // البحث جوه النصوص
+        data.verses.forEach(verse => {
+          if (verse.text.includes(query)) {
+            results.push(`<b>${data.book} ${verse.chapter}:${verse.verse}</b> - ${verse.text}`);
+          }
+        });
+      } catch (e) {
+        console.error("خطأ في تحميل الملف: " + file);
+      }
+    }
+
+    resultsDiv.innerHTML = results.length > 0 ? results.join('<br><br>') : 'لم يتم العثور على نتائج.';
+  }
+</script>
 </body>
 </html>
