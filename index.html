@@ -38,7 +38,31 @@
 
                 const filteredFiles = files.filter(file => 
                     file.name.includes(query) && file.name !== 'index.html'
-                );
+                async function searchFiles() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = ''; // تنظيف النتائج القديمة
+
+    for (const file of allFiles) {
+        // البحث في اسم الملف أو محتواه
+        const fileNameMatch = file.name.toLowerCase().includes(query);
+        let fileContentMatch = false;
+
+        try {
+            const response = await fetch(file.download_url);
+            const content = await response.text();
+            fileContentMatch = content.toLowerCase().includes(query);
+        } catch (error) {
+            console.error("خطأ في جلب محتوى الملف:", error);
+        }
+
+        if (fileNameMatch || fileContentMatch) {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${file.html_url}" target="_blank">${file.name}</a>`;
+            resultsContainer.appendChild(li);
+        }
+    }
+}
 
                 if (filteredFiles.length === 0) {
                     resultsDiv.innerHTML = '<p>لم يتم العثور على نتائج.</p>';
