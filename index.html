@@ -13,8 +13,8 @@
             overflow-x: hidden;
         }
 
-        /* الخلفية: صورة السيد المسيح ثابتة */
-        .background-image {
+        /* صورة الخلفية للسيد المسيح ثابتة وواضحة */
+        .background-fixed {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e4/Christ_the_Consoler.jpg');
@@ -22,147 +22,163 @@
             z-index: -2;
         }
 
-        .dark-overlay {
+        /* طبقة تظليل لضمان وضوح النصوص */
+        .dark-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.55);
             z-index: -1;
         }
 
-        /* الصليب العلامة المائية */
-        .cross-bg {
+        /* الصليب العلامة المائية كبير جداً */
+        .cross-watermark {
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 65vh;
-            color: rgba(255, 255, 255, 0.07);
+            font-size: 70vh;
+            color: rgba(255, 255, 255, 0.08);
             z-index: 0; pointer-events: none; user-select: none;
         }
 
-        .wrapper {
+        .container {
             position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 15px; min-height: 100vh; box-sizing: border-box;
+            padding: 50px 15px; min-height: 100vh; box-sizing: border-box;
         }
 
-        .main-head {
+        /* كلمة الكتاب المقدس مزخرفة بالذهبي */
+        .main-title {
             font-family: 'Aref Ruqaa', serif;
-            color: #ffcc00; font-size: clamp(35px, 8vw, 70px);
-            text-shadow: 3px 3px 10px #000; margin-bottom: 25px;
+            color: #ffcc00; font-size: clamp(40px, 9vw, 75px);
+            text-shadow: 3px 3px 12px #000; margin-bottom: 30px;
         }
 
+        /* مربع البحث */
         #searchInput {
-            width: 100%; max-width: 500px;
-            padding: 15px 25px; border: 3px solid #ffcc00;
-            border-radius: 50px; font-size: 18px;
+            width: 100%; max-width: 550px;
+            padding: 18px 30px; border: 3px solid #ffcc00;
+            border-radius: 50px; font-size: 20px;
             background: rgba(255, 255, 255, 0.95);
             text-align: center; outline: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        #info-box {
-            color: #fff; margin: 20px 0; font-size: 18px;
-            text-shadow: 1px 1px 4px #000;
+        #status-info {
+            color: #fff; margin: 25px 0; font-size: 19px;
+            text-shadow: 1px 1px 5px #000;
         }
 
-        .results-area {
-            width: 100%; max-width: 600px;
+        .results-list {
+            width: 100%; max-width: 650px;
             list-style: none; padding: 0;
         }
 
-        .file-item {
-            background: rgba(255, 255, 255, 0.9);
-            margin-bottom: 10px; padding: 15px;
-            border-radius: 12px; display: flex;
+        .file-box {
+            background: rgba(255, 255, 255, 0.92);
+            margin-bottom: 12px; padding: 18px;
+            border-radius: 15px; display: flex;
             justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .file-item b { color: #222; font-size: 17px; }
+        .file-box b { color: #1a1a1a; font-size: 18px; }
 
-        .file-item a {
+        .file-box a {
             text-decoration: none; background: #8b0000;
-            color: #fff; padding: 7px 15px;
-            border-radius: 8px; font-weight: bold;
+            color: #fff; padding: 8px 18px;
+            border-radius: 10px; font-weight: bold;
         }
 
-        .footer-logo {
-            margin-top: auto; padding-top: 50px;
+        /* كلمة مكتبة حبيب قدوس في الأسفل */
+        .footer-brand {
+            margin-top: auto; padding-top: 60px;
             font-family: 'Amiri', serif; color: #fff;
-            font-size: clamp(28px, 5vw, 45px);
-            text-shadow: 2px 2px 8px #000;
+            font-size: clamp(30px, 6vw, 50px);
+            text-shadow: 2px 2px 10px #000;
         }
     </style>
 </head>
 <body>
 
-    <div class="background-image"></div>
-    <div class="dark-overlay"></div>
-    <div class="cross-bg">†</div>
+    <div class="background-fixed"></div>
+    <div class="dark-layer"></div>
+    <div class="cross-watermark">†</div>
 
-    <div class="wrapper">
-        <h1 class="main-head">الكتاب المقدس كامل</h1>
+    <div class="container">
+        <h1 class="main-title">الكتاب المقدس كامل</h1>
 
-        <input type="text" id="searchInput" placeholder="✍️ ابحث هنا (مثلاً: تكوين، مزمور...)" oninput="doSearch()">
+        <input type="text" id="searchInput" placeholder="✍️ ابحث عن سفر أو آية..." oninput="handleSearch()">
 
-        <div id="info-box">جاري فحص المكتبة...</div>
+        <div id="status-info">جاري تجهيز المكتبة...</div>
 
-        <ul id="results-area" class="results-area"></ul>
+        <ul id="results-list" class="results-list"></ul>
 
-        <div class="footer-logo">مكتبة حبيب قدوس</div>
+        <div class="footer-brand">مكتبة حبيب قدوس</div>
     </div>
 
     <script>
-        const USERNAME = 'youssefgood13-crypto';
-        const REPOSITORY = 'servar-habib';
-        let filesData = [];
+        // الربط المباشر مع مستودعك الخاص
+        const GITHUB_USER = 'youssefgood13-crypto';
+        const GITHUB_REPO = 'servar-habib';
+        let allLibraryFiles = [];
 
-        // دالة جلب الملفات بمجرد فتح الموقع
-        async function loadFiles() {
-            const info = document.getElementById('info-box');
+        async function initLibrary() {
+            const status = document.getElementById('status-info');
             try {
-                const res = await fetch(`https://api.github.com/repos/${USERNAME}/${REPOSITORY}/contents/`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/`);
+                if (!response.ok) throw new Error();
+                const data = await response.json();
                 
-                // تصفية الملفات: نأخذ الملفات فقط ونستبعد صفحة index.html
-                filesData = data.filter(item => item.type === 'file' && item.name !== 'index.html');
-                info.innerText = `✅ تم تحميل ${filesData.length} ملف بنجاح`;
+                // تصفية الملفات واستبعاد index.html
+                allLibraryFiles = data.filter(file => file.type === 'file' && file.name !== 'index.html');
+                status.innerText = `✅ تم تجهيز ${allLibraryFiles.length} ملف للبحث`;
             } catch (e) {
-                info.innerText = "⚠️ تأكد أن المستودع 'Public' وأن الإنترنت يعمل";
-                info.style.color = "#ff6666";
+                status.innerText = "⚠️ تأكد أن المستودع 'Public' في إعدادات GitHub";
+                status.style.color = "#ff4d4d";
             }
         }
 
-        // دالة البحث
-        async function doSearch() {
-            const txt = document.getElementById('searchInput').value.trim().toLowerCase();
-            const list = document.getElementById('results-area');
-            const info = document.getElementById('info-box');
+        async function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const list = document.getElementById('results-list');
+            const status = document.getElementById('status-info');
             
             list.innerHTML = '';
-            if (txt.length < 2) {
-                info.innerText = `✅ المكتبة جاهزة (${filesData.length} ملف)`;
+            if (query.length < 2) {
+                status.innerText = `✅ المكتبة جاهزة (${allLibraryFiles.length} ملف)`;
                 return;
             }
 
-            info.innerText = "🔍 جاري البحث...";
+            status.innerText = "🔍 جاري البحث في الأسماء والمحتوى...";
 
-            let found = 0;
-            for (let f of filesData) {
-                if (f.name.toLowerCase().includes(txt)) {
-                    found++;
+            let count = 0;
+            for (let file of allLibraryFiles) {
+                let match = false;
+                
+                // البحث في اسم الملف
+                if (file.name.toLowerCase().includes(query)) {
+                    match = true;
+                } else {
+                    // البحث في محتوى الملف
+                    try {
+                        const res = await fetch(file.download_url);
+                        const content = await res.text();
+                        if (content.toLowerCase().includes(query)) match = true;
+                    } catch (err) {}
+                }
+
+                if (match) {
+                    count++;
                     const li = document.createElement('li');
-                    li.className = 'file-item';
-                    li.innerHTML = `<b>📖 ${f.name}</b><a href="${f.html_url}" target="_blank">فتح</a>`;
+                    li.className = 'file-box';
+                    li.innerHTML = `<b>📕 ${file.name}</b><a href="${file.html_url}" target="_blank">قراءة</a>`;
                     list.appendChild(li);
                 }
             }
-
-            info.innerText = found > 0 ? `✨ وجدنا ${found} نتيجة` : "🤷 لم نجد نتائج لـ " + txt;
+            status.innerText = count > 0 ? `✨ وجدنا ${count} نتيجة بحث` : "🤷 لم نجد نتائج لـ " + query;
         }
 
-        window.onload = loadFiles;
+        window.onload = initLibrary;
     </script>
 </body>
 </html>
