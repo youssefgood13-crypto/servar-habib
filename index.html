@@ -54,56 +54,36 @@
     <div class="welcome-msg">
         مرحباً بكم في مكتبة حبيب قدوس
     </div>
-async function searchBible() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) return;
+<script>
+    const files = ['Mark.json']; // هنا حددنا ملف مرقس فقط للتجربة
 
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = 'جاري البحث...';
+    async function search() {
+        const query = document.getElementById('searchQuery').value;
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = ''; // مسح النتائج القديمة
 
-    // أضف هنا كل أسماء ملفاتك الموجودة في المجلدات
-    const files 
-        'Mark.'json'
-    ]; 
+        if (!query) return;
 
-    const folders = ['data', 'generated_data']; 
-    let allResults = [];
-
-    for (const file of files) {
-        for (const folder of folders) {
+        for (const file of files) {
             try {
-                const response = await fetch(`${folder}/${file}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const filtered = data.filter(verse => verse.text.includes(query));
-                    allResults = allResults.concat(filtered);
-                    break; 
-                }
+                const response = await fetch(file);
+                const data = await response.json();
+
+                // افترضنا أن ملف الـ JSON عبارة عن قائمة من الآيات
+                data.forEach(item => {
+                    if (item.text.includes(query)) {
+                        const div = document.createElement('div');
+                        div.className = 'result-item';
+                        div.innerHTML = `<strong>${item.reference}:</strong> ${item.text}`;
+                        resultsContainer.appendChild(div);
+                    }
+                });
             } catch (error) {
-                console.warn(`الملف غير موجود في: ${folder}`);
+                console.error('Error loading file:', file, error);
             }
         }
     }
-
-    displayResults(allResults);
-}
-
-function displayResults(results) {
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
-
-    if (results.length === 0) {
-        resultsContainer.innerHTML = 'لم يتم العثور على نتائج.';
-        return;
-    }
-
-    results.forEach(result => {
-        const div = document.createElement('div');
-        div.className = 'result-item';
-        div.innerHTML = `<strong>${result.book} ${result.chapter}:${result.verse}</strong> <p>${result.text}</p>`;
-        resultsContainer.appendChild(div);
-    });
-}
+</script>
 </script>
 </body>
 </html>
