@@ -54,32 +54,64 @@
     <div class="welcome-msg">
         مرحباً بكم في مكتبة حبيب قدوس
     </div>
-<script>
-  async function searchBible() {
-    const query = document.getElementById('searchInput').value;
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = 'جاري البحث...';
+async function searchBible() {
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
 
-    // هنا بنحدد ملفات الـ JSON (تأكد من مطابقة الأسماء)
-    const files = ['Mark.json', 'Exodus.json']; 
-    let results = [];
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = 'جاري البحث...';
+
+    // أضف هنا كل أسماء ملفاتك الموجودة في المجلدات
+    const files = [
+        'matthew.json', 
+        'Mark.json', 
+        'luke.json', 
+        'john.json',
+        'acts.json'
+    ]; 
+
+    const folders = ['data', 'generated_data']; 
+    let allResults = [];
 
     for (const file of files) {
-      try {
-        const response = await fetch(`data/${file}`);
-        const data = await response.json();
-        
-        // البحث جوه النصوص
-        data.verses.forEach(verse => {
-          if (verse.text.includes(query)) {
-            results.push(`<b>${data.book} ${verse.chapter}:${verse.verse}</b> - ${verse.text}`);
-          }
-        });
-      } catch (e) {
-        console.error("خطأ في تحميل الملف: " + file);
-      }
+        for (const folder of folders) {
+            try {
+                const response = await fetch(`${folder}/${file}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const filtered = data.filter(verse => verse.text.includes(query));
+                    allResults = allResults.concat(filtered);
+                    break; 
+                }
+            } catch (error) {
+                console.warn(`الملف غير موجود في: ${folder}`);
+            }
+        }
     }
 
+    displayResults(allResults);
+}
+
+function displayResults(results) {
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
+
+    if (results.length === 0) {
+        resultsContainer.innerHTML = 'لم يتم العثور على نتائج.';
+        return;
+    }
+
+    results.forEach(result => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.innerHTML = `<strong>${result.book} ${result.chapter}:${result.verse}</strong> <p>${result.text}</p>`;
+        resultsContainer.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>
+}
     resultsDiv.innerHTML = results.length > 0 ? results.join('<br><br>') : 'لم يتم العثور على نتائج.';
   }
 </script>
