@@ -2,89 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مكتبة حبيب قدوس</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرك بحث الملفات</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 50 px;
-        }
-        .header-icon {
-            font-size: 50 px;
-            color: #8b0000;
-        }
-        h1 {
-            color: #333;
-        }
-        .search-container {
-            margin-top: 30 px;
-        }
-        input[type="text"] {
-            padding: 10 px;
-            width: 60 %;
-            border: 1 px solid #ccc;
-            border-radius: 5 px;
-        }
-        button {
-            padding: 10 px 20 px;
-            background-color: #8b0000;
-            color: white;
-            border: none;
-            border-radius: 5 px;
-            cursor: pointer;
-        }
-        .welcome-msg {
-            margin-top: 20 px;
-            font-size: 20 px;
-            color: #555;
-        }
+        body { font-family: sans-serif; padding: 20 px; text-align: center; }
+        #results { margin-top: 20 px; text-align: right; display: inline-block; width: 80 %; }
+        .result-item { border-bottom: 1 px solid #ccc; padding: 10 px; }
+        input { padding: 10 px; width: 60 %; font-size: 16 px; }
+        button { padding: 10 px 20 px; font-size: 16 px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header-icon">†</div>
-    <h1>الإنجيل المقدس</h1>
-    
-    <div class="search-container">
-        <input type="text" placeholder="ابحث في الكتاب المقدس (العهد القديم والجديد)...">
-        <button>بحث</button>
-    </div>
+    <h2>البحث في الملفات المرفوعة</h2>
+    <input type="text" id="searchInput" placeholder="اكتب اسم الملف أو كلمة للبحث...">
+    <button onclick="performSearch()">بحث</button>
 
-    <div class="welcome-msg">
-        مرحباً بكم في مكتبة حبيب قدوس
-    </div>
-<script>
-    const files = ['Ruth.json']; // هنا حددنا ملف مرقس فقط للتجربة
-
-    async function search() {
-        const query = document.getElementById('searchQuery').value;
-        const resultsContainer = document.getElementById('results');
-        resultsContainer.innerHTML = ''; // مسح النتائج القديمة
-
-        if (!query) return;
-
-        for (const file of files) {
-            try {
-                const response = await fetch(file);
-                const data = await response.json();
-
-                // افترضنا أن ملف الـ JSON عبارة عن قائمة من الآيات
-                data.forEach(item => {
-                    if (item.text.includes(query)) {
-                        const div = document.createElement('div');
-                        div.className = 'result-item';
-                        div.innerHTML = `<strong>${item.reference}:</strong> ${item.text}`;
-                        resultsContainer.appendChild(div);
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading file:', file, error);
-            }
-        }
-    }
-</script>
-</script>
-</body>
-</html>
- 
+    <div id="
